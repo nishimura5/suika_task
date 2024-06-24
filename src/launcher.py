@@ -6,7 +6,7 @@ import pyxel
 SCREEN_WIDTH = 256
 SCREEN_HEIGHT = 256
 GRAVITY = 0.4
-TERMINAL_VELOCITY = 16
+AIR_RESISTANCE = 0.96
 
 
 ball_types = {
@@ -39,10 +39,6 @@ class Ball:
         self.vel = Vector(0, 0)
 
     def update(self):
-        if abs(self.vel.x) > TERMINAL_VELOCITY:
-            self.vel.x = TERMINAL_VELOCITY * math.copysign(1, self.vel.x)
-        if abs(self.vel.y) > TERMINAL_VELOCITY:
-            self.vel.y = TERMINAL_VELOCITY * math.copysign(1, self.vel.y)
         if abs(self.vel.x) < 0.2:
             self.vel.x = 0
         if abs(self.vel.y) < 0.2:
@@ -99,6 +95,8 @@ class App:
 
         for ball in self.balls:
             ball.vel.y += GRAVITY
+            ball.vel.x *= AIR_RESISTANCE
+            ball.vel.y *= AIR_RESISTANCE
 
         combi_list = list(combinations(self.balls, 2))
         for a, b in combi_list:
@@ -117,6 +115,9 @@ class App:
                 self.create_ball(
                     (a.pos.x + b.pos.x) / 2, (a.pos.y + b.pos.y) / 2, new_ball
                 )
+                # Prevent the new ball from colliding with a and b
+                a.level = -1
+                b.level = -1
         for ball in self.balls:
             ball.update()
 
@@ -152,8 +153,8 @@ class App:
 
 def colliding(ball_a, ball_b):
     dx = ball_a.pos.x - ball_b.pos.x
-    if dx == 0:
-        dx = pyxel.rndf(-0.2, 0.2)
+    if abs(dx) < 1:
+        dx = pyxel.rndf(-2, 2)
     dy = ball_a.pos.y - ball_b.pos.y
     distance = (dx**2 + dy**2) ** 0.5
     normal_x = dx / distance
