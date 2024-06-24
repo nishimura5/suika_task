@@ -1,23 +1,22 @@
-import math
 from itertools import combinations
 
 import pyxel
 
-SCREEN_WIDTH = 256
-SCREEN_HEIGHT = 256
-GRAVITY = 0.4
-AIR_RESISTANCE = 0.96
+SCREEN_WIDTH = 512
+SCREEN_HEIGHT = 512
+GRAVITY = 0.5
+AIR_RESISTANCE = 0.92
 
 
 ball_types = {
     "red": {"radius": 10, "color": 8},
-    "orange": {"radius": 12, "color": 9},
-    "blue": {"radius": 20, "color": 12},
-    "purple": {"radius": 30, "color": 2},
-    "yellow": {"radius": 36, "color": 10},
-    "green": {"radius": 42, "color": 3},
-    "white": {"radius": 50, "color": 7},
-    "black": {"radius": 60, "color": 6},
+    "orange": {"radius": 16, "color": 9},
+    "blue": {"radius": 26, "color": 12},
+    "purple": {"radius": 40, "color": 2},
+    "yellow": {"radius": 50, "color": 10},
+    "green": {"radius": 60, "color": 3},
+    "white": {"radius": 70, "color": 7},
+    "black": {"radius": 80, "color": 6},
 }
 level_table = [k for k in ball_types.keys()]
 
@@ -61,7 +60,7 @@ class Gauge:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.height = 5
+        self.height = 3
         self.color = 7
         self.value = 0
 
