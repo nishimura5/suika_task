@@ -1,0 +1,26 @@
+[project]
+name = "suika-task"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "nishimura5", email = "" }
+]
+dependencies = [
+    "pyxel>=2.0.14",
+]
+readme = "README.md"
+requires-python = ">= 3.12"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/suika_task"]
