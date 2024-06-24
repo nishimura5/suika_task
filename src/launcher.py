@@ -158,19 +158,19 @@ def colliding(ball_a, ball_b):
     distance = (dx**2 + dy**2) ** 0.5
     normal_x = dx / distance
     normal_y = dy / distance
-    penetration_depth = distance - (ball_a.radius + ball_b.radius)
-    is_colliding = penetration_depth <= 0
-    if is_colliding is False:
+    penetration_depth = (ball_a.radius + ball_b.radius) - distance
+    if penetration_depth <= 0:
         return None
-    if is_colliding and ball_a.level == ball_b.level:
+    if penetration_depth > 0 and ball_a.level == ball_b.level:
         return "levelup"
+
     penet_x = penetration_depth * normal_x
     penet_y = penetration_depth * normal_y
 
-    ball_a.vel.x -= penet_x
-    ball_a.vel.y -= penet_y
-    ball_b.vel.x += penet_x
-    ball_b.vel.y += penet_y
+    ball_a.vel.x += penet_x
+    ball_a.vel.y += penet_y
+    ball_b.vel.x -= penet_x
+    ball_b.vel.y -= penet_y
 
     return None
 
