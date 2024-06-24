@@ -2,16 +2,16 @@ from itertools import combinations
 
 import pyxel
 
-SCREEN_WIDTH = 512
-SCREEN_HEIGHT = 512
+SCREEN_WIDTH = 300
+SCREEN_HEIGHT = 300
 GRAVITY = 0.5
 AIR_RESISTANCE = 0.92
 
 
 ball_types = {
     "red": {"radius": 10, "color": 8},
-    "orange": {"radius": 16, "color": 9},
-    "blue": {"radius": 26, "color": 12},
+    "orange": {"radius": 20, "color": 9},
+    "blue": {"radius": 30, "color": 12},
     "purple": {"radius": 40, "color": 2},
     "yellow": {"radius": 50, "color": 10},
     "green": {"radius": 60, "color": 3},
@@ -61,7 +61,7 @@ class Gauge:
         self.x = x
         self.y = y
         self.height = 3
-        self.color = 7
+        self.color = 10
         self.value = 0
 
     def reset(self):
@@ -152,25 +152,34 @@ class App:
 
 def colliding(ball_a, ball_b):
     dx = ball_a.pos.x - ball_b.pos.x
-    if abs(dx) < 1:
-        dx = pyxel.rndf(-2, 2)
+    if 0 < dx < 5:
+        dx = pyxel.rndf(3, 5)
+    elif -5 < dx < 0:
+        dx = pyxel.rndf(-5, -3)
+    elif dx == 0:
+        dx = pyxel.rndf(-5, 5)
     dy = ball_a.pos.y - ball_b.pos.y
     distance = (dx**2 + dy**2) ** 0.5
     normal_x = dx / distance
     normal_y = dy / distance
+
+    # Deeper penetration is more likely to move
     penetration_depth = (ball_a.radius + ball_b.radius) - distance
     if penetration_depth <= 0:
         return None
     if penetration_depth > 0 and ball_a.level == ball_b.level:
         return "levelup"
-
     penet_x = penetration_depth * normal_x
     penet_y = penetration_depth * normal_y
 
-    ball_a.vel.x += penet_x
-    ball_a.vel.y += penet_y
-    ball_b.vel.x -= penet_x
-    ball_b.vel.y -= penet_y
+    # Smaller ball is more likely to move
+    ra = ball_a.radius
+    rb = ball_b.radius
+
+    ball_a.vel.x += penet_x * (rb / (ra + rb))
+    ball_a.vel.y += penet_y * (rb / (ra + rb))
+    ball_b.vel.x -= penet_x * (ra / (ra + rb))
+    ball_b.vel.y -= penet_y * (ra / (ra + rb))
 
     return None
 
